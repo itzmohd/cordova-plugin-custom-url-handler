@@ -69,7 +69,7 @@
     ================================================
     -->
     <platform name="ios">
-        <preference name="SwiftVersion" value="5.0" />
+        <preference name="SwiftVersion" value="6.0" />
         <!-- The custom Swift class where we handle URL loading -->
         <source-file src="src/ios/CustomUrlLauncher.swift" />
 
