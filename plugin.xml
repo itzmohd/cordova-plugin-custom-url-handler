@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-custom-url-handler" version="1.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <name>UrlSchemeAndExternalLauncher</name>
+    <description>Handles custom URL schemes and forces external links to open in the native browser.</description>
+    <keywords>cordova,url-scheme,deep-link,webview</keywords>
+
+    <!--
+    ================================================
+    1. Plugin Variable Configuration
+    ================================================
+    Define the variable for the custom URL scheme. It must be provided during installation.
+    -->
+    <variable name="URL_SCHEME" defaultValue="myapp" />
+    <!--
+    New variable for the iOS Bundle ID, used for the CFBundleURLName key.
+    This helps prevent collisions when multiple apps register the same scheme.
+    -->
+    <variable name="IOS_BUNDLE_ID" defaultValue="com.mycompany.appname" />
+
+    <!--
+    ================================================
+    2. JavaScript Interface (The main entry point)
+    ================================================
+    -->
+    <js-module src="www/CustomUrlLauncher.js" name="CustomUrlLauncher">
+        <clobbers target="window.CustomUrlLauncher" />
+    </js-module>
+
+    <!--
+    ================================================
+    3. Android Platform Implementation
+    ================================================
+    -->
+    <platform name="android">
+        <!-- The custom Java class where we handle URL loading and intent logic -->
+        <source-file src="src/android/CustomUrlLauncher.java" target-dir="src/cordova-plugin-custom-url-handler" />
+
+        <!--
+        Modifies the AndroidManifest.xml to register the custom URL scheme.
+        -->
+        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- USE VARIABLE: ${URL_SCHEME} -->
+                <data android:scheme="${URL_SCHEME}" />
+            </intent-filter>
+        </config-file>
+
+        <!--
+        Injects the plugin into Cordova's configuration (config.xml) and makes the URL_SCHEME
+        available to the native Java code via preferences.
+        -->
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="CustomUrlLauncher">
+                <param name="android-package" value="cordova.plugin.customurllauncher.CustomUrlLauncher" />
+                <param name="onload" value="true" />
+            </feature>
+            <!-- Preference to pass the URL scheme to the native code at runtime -->
+            <preference name="URL_SCHEME" value="${URL_SCHEME}" />
+        </config-file>
+    </platform>
+
+    <!--
+    ================================================
+    4. iOS Platform Implementation
+    ================================================
+    -->
+    <platform name="ios">
+        <!-- The custom Swift class where we handle URL loading -->
+        <source-file src="src/ios/CustomUrlLauncher.swift" />
+
+        <!--
+        Registers the custom URL scheme in the Info.plist.
+        -->
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+                <dict>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <!-- USE VARIABLE: ${URL_SCHEME} -->
+                        <string>${URL_SCHEME}</string>
+                    </array>
+                    <key>CFBundleURLName</key>
+                    <!-- USE NEW VARIABLE: ${IOS_BUNDLE_ID} -->
+                    <string>${IOS_BUNDLE_ID}</string>
+                </dict>
+            </array>
+        </config-file>
+
+        <!--
+        Injects the plugin into Cordova's configuration (config.xml) and makes the URL_SCHEME
+        available to the native Swift code via settings.
+        -->
+        <config-file target="config.xml" parent="/*">
+            <feature name="CustomUrlLauncher">
+                <param name="ios-package" value="CustomUrlLauncher" />
+                <param name="onload" value="true" />
+            </feature>
+            <!-- Setting to pass the URL scheme to the native code at runtime -->
+            <preference name="URL_SCHEME" value="${URL_SCHEME}" />
+        </config-file>
+    </platform>
+
+</plugin>
