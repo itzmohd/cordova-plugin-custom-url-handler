@@ -69,9 +69,8 @@
     ================================================
     -->
     <platform name="ios">
-        <preference name="SwiftVersion" value="6.0" />
-        <!-- The custom Swift class where we handle URL loading -->
-        <source-file src="src/ios/CustomUrlLauncher.swift" />
+        <header-file src="src/ios/CustomUrlLauncher.h" />
+		<source-file src="src/ios/CustomUrlLauncher.m" />
 
         <!--
         Registers the custom URL scheme in the Info.plist.
