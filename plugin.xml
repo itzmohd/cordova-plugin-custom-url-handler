@@ -40,7 +40,7 @@
         Modifies the AndroidManifest.xml to register the custom URL scheme.
         -->
         <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
-            <intent-filter>
+            <intent-filter android:exported="true" tools:node="merge">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
