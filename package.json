@@ -1,0 +1,50 @@
+{
+  "name": "cordova-plugin-custom-url-handler",
+  "version": "1.0.1",
+  "description": "A Cordova plugin to register a custom URL scheme and override WebView behavior to launch specific URLs in the native mobile browser.",
+  "cordova": {
+    "id": "cordova-plugin-custom-url-handler",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itzmohd/cordova-plugin-custom-url-handler.git"
+  },
+  "keywords": [
+    "cordova",
+    "plugin",
+    "url-scheme",
+    "deep-link",
+    "external-browser",
+    "ecosystem:cordova"
+  ],
+  "author": "Mohamed Saeed",
+  "license": "MIT",
+  "engines": {
+    "cordovaDependencies": {
+      "3.0.0": {
+        "cordova-android": ">=7.0.0",
+        "cordova-ios": ">=5.0.0"
+      },
+      "4.0.0": {
+        "cordova-android": ">=10.0.0",
+        "cordova-ios": ">=6.0.0"
+      }
+    }
+  },
+  "variables": [
+    {
+      "name": "URL_SCHEME",
+      "description": "The custom scheme used to launch the app (e.g., 'myapp').",
+      "default": "myapp"
+    },
+    {
+      "name": "IOS_BUNDLE_ID",
+      "description": "The reverse domain bundle ID for iOS (e.g., 'com.mycompany.appname'). Used for CFBundleURLName.",
+      "default": "com.mycompany.appname"
+    }
+  ]
+}
