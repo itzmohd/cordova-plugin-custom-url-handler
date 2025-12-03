@@ -1,109 +1,73 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="cordova-plugin-custom-url-handler" version="1.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <name>UrlSchemeAndExternalLauncher</name>
+    <name>Custom URL Scheme Handler</name>
     <description>Handles custom URL schemes and forces external links to open in the native browser.</description>
     <keywords>cordova,url-scheme,deep-link,webview</keywords>
 
-    <!--
-    ================================================
-    1. Plugin Variable Configuration
-    ================================================
-    Define the variable for the custom URL scheme. It must be provided during installation.
-    -->
-    <variable name="URL_SCHEME" defaultValue="myapp" />
-    <!--
-    New variable for the iOS Bundle ID, used for the CFBundleURLName key.
-    This helps prevent collisions when multiple apps register the same scheme.
-    -->
-    <variable name="IOS_BUNDLE_ID" defaultValue="com.mycompany.appname" />
+    <!-- Plugin Variables -->
+    <variable name="URL_SCHEME" default="myapp" />
+    <variable name="IOS_BUNDLE_ID" default="com.mycompany.appname" />
 
-    <!--
-    ================================================
-    2. JavaScript Interface (The main entry point)
-    ================================================
-    -->
+    <!-- JavaScript Interface -->
     <js-module src="www/CustomUrlLauncher.js" name="CustomUrlLauncher">
         <clobbers target="window.CustomUrlLauncher" />
     </js-module>
 
-    <!--
-    ================================================
-    3. Android Platform Implementation
-    ================================================
-    -->
+    <!-- Android Platform Implementation -->
     <platform name="android">
-        <!-- The custom Java class where we handle URL loading and intent logic -->
-        <source-file src="src/android/CustomUrlLauncher.java" target-dir="src/cordova-plugin-custom-url-handler" />
+        <!-- Update the path to match your package structure -->
+        <source-file src="src/android/CustomUrlLauncher.java" target-dir="src/com/alsalambahrain/asbblcplab/AlSalamBankJumioTest" />
 
-        <!--
-        Modifies the AndroidManifest.xml to register the custom URL scheme.
-        -->
-        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
-            <intent-filter android:exported="true" tools:node="merge">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!-- USE VARIABLE: ${URL_SCHEME} -->
-                <data android:scheme="${URL_SCHEME}" />
-            </intent-filter>
+        <!-- Modify AndroidManifest.xml to register the custom URL scheme -->
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <activity android:name="com.alsalambahrain.asbblcplab.AlSalamBankJumioTest.CustomUrlLauncherActivity"
+                      android:exported="true">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+                    <data android:scheme="${URL_SCHEME}" />
+                </intent-filter>
+            </activity>
         </config-file>
 
-        <!--
-        Injects the plugin into Cordova's configuration (config.xml) and makes the URL_SCHEME
-        available to the native Java code via preferences.
-        -->
+        <!-- Inject into Cordova's configuration -->
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="CustomUrlLauncher">
-                <param name="android-package" value="cordova.plugin.customurllauncher.CustomUrlLauncher" />
+                <param name="android-package" value="com.alsalambahrain.asbblcplab.AlSalamBankJumioTest.CustomUrlLauncher" />
                 <param name="onload" value="true" />
             </feature>
-            <!-- Preference to pass the URL scheme to the native code at runtime -->
-            <preference name="URL_SCHEME" value="${URL_SCHEME}" />
         </config-file>
     </platform>
 
-    <!--
-    ================================================
-    4. iOS Platform Implementation
-    ================================================
-    -->
+    <!-- iOS Platform Implementation -->
     <platform name="ios">
-
-		<framework src="WebKit.framework" weak="true" />
-		
+        <framework src="WebKit.framework" weak="true" />
+        
         <header-file src="src/ios/CustomUrlLauncher.h" />
-		<source-file src="src/ios/CustomUrlLauncher.m" />
+        <source-file src="src/ios/CustomUrlLauncher.m" />
 
-        <!--
-        Registers the custom URL scheme in the Info.plist.
-        -->
+        <!-- Register custom URL scheme in Info.plist -->
         <config-file target="*-Info.plist" parent="CFBundleURLTypes">
             <array>
                 <dict>
                     <key>CFBundleURLSchemes</key>
                     <array>
-                        <!-- USE VARIABLE: ${URL_SCHEME} -->
                         <string>${URL_SCHEME}</string>
                     </array>
                     <key>CFBundleURLName</key>
-                    <!-- USE NEW VARIABLE: ${IOS_BUNDLE_ID} -->
                     <string>${IOS_BUNDLE_ID}</string>
                 </dict>
             </array>
         </config-file>
 
-        <!--
-        Injects the plugin into Cordova's configuration (config.xml) and makes the URL_SCHEME
-        available to the native Swift code via settings.
-        -->
+        <!-- Inject into Cordova's configuration -->
         <config-file target="config.xml" parent="/*">
             <feature name="CustomUrlLauncher">
                 <param name="ios-package" value="CustomUrlLauncher" />
                 <param name="onload" value="true" />
             </feature>
-            <!-- Setting to pass the URL scheme to the native code at runtime -->
-            <preference name="URL_SCHEME" value="${URL_SCHEME}" />
         </config-file>
     </platform>
 
