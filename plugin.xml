@@ -69,6 +69,9 @@
     ================================================
     -->
     <platform name="ios">
+
+		<framework src="WebKit.framework" weak="true" />
+		
         <header-file src="src/ios/CustomUrlLauncher.h" />
 		<source-file src="src/ios/CustomUrlLauncher.m" />
 
